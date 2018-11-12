@@ -11,9 +11,16 @@ async def index(request):
 
 
 async def chat_request(request):
-    phrase = await request.json()
-    intent = phrase["intent"]
-    return web.json_response({"text": intents[intent]})
+    resp = {"text":""}
+
+    try:
+        phrase = await request.json()
+        intent = phrase["intent"]
+        resp["text"] = intents[intent]
+    except Exception as ex:
+        resp["text"] = "Não entendi!"
+    finally:
+        return web.json_response(resp)
 
 async def config_app():
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
